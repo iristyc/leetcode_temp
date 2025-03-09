@@ -100,25 +100,77 @@ func getQuestionProgressInfo() (easy, medium, hard int) {
 }
 
 // 解析做题详情
+// func analysisProgressInfo(mapResult *map[string]interface{}) (easy, medium, hard int) {
+// 	data := (*mapResult)["data"]
+// 	userProfileUserQuestionProgress := data.(map[string]interface{})["userProfileUserQuestionProgress"]
+// 	numAcceptedQuestions := userProfileUserQuestionProgress.(map[string]interface{})["numAcceptedQuestions"]
+// 	for _, v := range numAcceptedQuestions.([]interface{}) {
+// 		m := v.(map[string]interface{})
+// 		if m["difficulty"] == "EASY" {
+// 			easy += int(m["count"].(float64))
+// 		}
+// 		if m["difficulty"] == "MEDIUM" {
+// 			medium += int(m["count"].(float64))
+// 		}
+// 		if m["difficulty"] == "HARD" {
+// 			hard += int(m["count"].(float64))
+// 		}
+// 	}
+// 	// fmt.Println(easy, medium, hard)
+// 	return
+// }
 func analysisProgressInfo(mapResult *map[string]interface{}) (easy, medium, hard int) {
-	data := (*mapResult)["data"]
-	userProfileUserQuestionProgress := data.(map[string]interface{})["userProfileUserQuestionProgress"]
-	numAcceptedQuestions := userProfileUserQuestionProgress.(map[string]interface{})["numAcceptedQuestions"]
-	for _, v := range numAcceptedQuestions.([]interface{}) {
-		m := v.(map[string]interface{})
-		if m["difficulty"] == "EASY" {
-			easy += int(m["count"].(float64))
-		}
-		if m["difficulty"] == "MEDIUM" {
-			medium += int(m["count"].(float64))
-		}
-		if m["difficulty"] == "HARD" {
-			hard += int(m["count"].(float64))
-		}
-	}
-	// fmt.Println(easy, medium, hard)
-	return
+    // 確認 mapResult 中的 "data" 欄位是否存在且為正確型別
+    data, ok := (*mapResult)["data"].(map[string]interface{})
+    if !ok {
+        fmt.Println("Error: Unable to parse data field")
+        return
+    }
+
+    // 確認 "userProfileUserQuestionProgressV2" 是否存在且為正確型別
+    userProfileUserQuestionProgressV2, ok := data["userProfileUserQuestionProgressV2"].(map[string]interface{})
+    if !ok {
+        fmt.Println("Error: Unable to parse userProfileUserQuestionProgressV2 field")
+        return
+    }
+
+    // 確認 "numAcceptedQuestions" 是否存在且為正確型別
+    numAcceptedQuestions, ok := userProfileUserQuestionProgressV2["numAcceptedQuestions"].([]interface{})
+    if !ok {
+        fmt.Println("Error: Unable to parse numAcceptedQuestions field")
+        return
+    }
+
+    // 遍歷 numAcceptedQuestions
+    for _, v := range numAcceptedQuestions {
+        m, ok := v.(map[string]interface{})
+        if !ok {
+            fmt.Println("Error: Invalid data structure")
+            continue
+        }
+
+        // 確認 difficulty 和 count 欄位存在並進行計算
+        if diff, ok := m["difficulty"].(string); ok {
+            if count, ok := m["count"].(float64); ok {
+                switch diff {
+                case "EASY":
+                    easy += int(count)
+                case "MEDIUM":
+                    medium += int(count)
+                case "HARD":
+                    hard += int(count)
+                }
+            } else {
+                fmt.Println("Error: Invalid count value")
+            }
+        } else {
+            fmt.Println("Error: Invalid difficulty value")
+        }
+    }
+
+    return
 }
+
 
 // 读取模版文件
 func readFile() string {
