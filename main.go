@@ -15,6 +15,7 @@ import (
 
 var userName = "iristyc"
 
+
 func main() {
 	easy, medium, hard := getQuestionProgressInfo()
 	mdContent := readFile()
@@ -22,6 +23,10 @@ func main() {
 	mdContent = strings.ReplaceAll(mdContent, `[[2]]`, strconv.Itoa(easy))
 	mdContent = strings.ReplaceAll(mdContent, `[[3]]`, strconv.Itoa(medium))
 	mdContent = strings.ReplaceAll(mdContent, `[[4]]`, strconv.Itoa(hard))
+	// 新增
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("Response Body: ", string(body))  // 打印出 API 的回應
+
 	fmt.Println(mdContent)
 	createWriteFile(mdContent)
 	updateGithub()
