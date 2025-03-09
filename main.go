@@ -23,10 +23,7 @@ func main() {
 	mdContent = strings.ReplaceAll(mdContent, `[[2]]`, strconv.Itoa(easy))
 	mdContent = strings.ReplaceAll(mdContent, `[[3]]`, strconv.Itoa(medium))
 	mdContent = strings.ReplaceAll(mdContent, `[[4]]`, strconv.Itoa(hard))
-	// 新增
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("Response Body: ", string(body))  // 打印出 API 的回應
-
+	
 	fmt.Println(mdContent)
 	createWriteFile(mdContent)
 	updateGithub()
@@ -83,7 +80,11 @@ func getQuestionProgressInfo() (easy, medium, hard int) {
 	resp, err := client.Do(req)
 	checkErr(err)
 	defer resp.Body.Close()
+	
 	body, _ := ioutil.ReadAll(resp.Body)
+	// 新增
+	fmt.Println("Response Body: ", string(body))  // 打印出 API 的回應
+	
 	var mapResult map[string]interface{}
 	err = json.Unmarshal(body, &mapResult)
 	checkErr(err)
