@@ -72,7 +72,7 @@ func createWriteFile(mdContent string) {
 func getQuestionProgressInfo() (easy, medium, hard int) {
 	client := &http.Client{}
 	jsonStr := `{"operationName":"userQuestionProgress","variables":{"userSlug":"` + userName + `"},"query":"query userQuestionProgress($userSlug: String!) {\n  userProfileUserQuestionProgress(userSlug: $userSlug) {\n    numAcceptedQuestions {\n      difficulty\n      count\n}\n}\n}\n"}`
-	req, err := http.NewRequest("POST", "https://leetcode-cn.com/graphql/", strings.NewReader(jsonStr))
+	req, err := http.NewRequest("POST", "https://leetcode.com/graphql/", strings.NewReader(jsonStr))
 	req.Header.Add("content-type", "application/json")
 	checkErr(err)
 	resp, err := client.Do(req)
