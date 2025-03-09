@@ -73,7 +73,13 @@ func createWriteFile(mdContent string) {
 // 请求接口获取做题进度
 func getQuestionProgressInfo() (easy, medium, hard int) {
 	client := &http.Client{}
-	jsonStr := `{"operationName":"userQuestionProgress","variables":{"userSlug":"` + userName + `"},"query":"query userQuestionProgress($userSlug: String!) {\n  userProfileUserQuestionProgress(userSlug: $userSlug) {\n    numAcceptedQuestions {\n      difficulty\n      count\n}\n}\n}\n"}`
+	// jsonStr := `{"operationName":"userQuestionProgress","variables":{"userSlug":"` + userName + `"},"query":"query userQuestionProgress($userSlug: String!) {\n  userProfileUserQuestionProgress(userSlug: $userSlug) {\n    numAcceptedQuestions {\n      difficulty\n      count\n}\n}\n}\n"}`
+	jsonStr := `{
+	   "operationName": "userQuestionProgress",
+	   "variables": {"userSlug": "` + userName + `"},
+	   "query": "query userQuestionProgress($userSlug: String!) {\n  userProfileUserQuestionProgressV2(userSlug: $userSlug) {\n    numAcceptedQuestions {\n      difficulty\n      count\n    }\n  }\n}"
+	}`
+
 	req, err := http.NewRequest("POST", "https://leetcode.com/graphql/", strings.NewReader(jsonStr))
 	req.Header.Add("content-type", "application/json")
 	checkErr(err)
